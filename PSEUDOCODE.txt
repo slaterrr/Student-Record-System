@@ -1,0 +1,57 @@
+START OF PROGRAM
+
+DISPLAY main menu to user(Add/View/Edit/Remove Students)
+
+IF user chooses Add
+
+    ASK user for Name
+
+    ASK user for ID
+
+    ASK user for GPA
+
+    DISPLAY confirmation of student addition, redirect to main menu
+
+IF user chooses View
+
+    VERIFY if there exists at least 1 student
+
+    SORT all students by Ascending ID order
+
+    DISPLAY all students names with their IDs in ascending order
+    
+    ASK user if which student record they would like to view(Ask for ID)
+
+    DISPLAY student name, GPA, and ID they wish to view
+
+    redirect to main menu
+
+IF user chooses Edit
+
+    VERIFY if there exists at least 1 student
+
+    SORT all students by Ascending ID order
+
+    DISPLAY all students names with their IDS in ascending order
+
+    ASK user which student they would like to edit(Ask for ID)
+
+    ASK user what they would like to edit? (Name, GPA, or ID)
+
+    DISPLAY edit they proposed, redirect to main menu
+
+IF user chooses Remove
+
+    VERIFY if there exists at least 1 student
+
+    SORT all students by Ascending ID order
+
+    DISPLAY all students names with their IDS in ascending order
+
+    ASK user which student they would like to remove? (Must input ID)
+
+    IF user inputs invalid ID, prompt them again
+
+    ELSE
+
+        DISPLAY confirmation of removal, redirect to main menu
