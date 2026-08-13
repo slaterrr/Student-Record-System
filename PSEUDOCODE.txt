@@ -12,20 +12,6 @@ IF user chooses Add
 
     DISPLAY confirmation of student addition, redirect to main menu
 
-IF user chooses View
-
-    VERIFY if there exists at least 1 student
-
-    SORT all students by Ascending ID order
-
-    DISPLAY all students names with their IDs in ascending order
-    
-    ASK user if which student record they would like to view(Ask for ID)
-
-    DISPLAY student name, GPA, and ID they wish to view
-
-    redirect to main menu
-
 IF user chooses Edit
 
     VERIFY if there exists at least 1 student
@@ -52,6 +38,19 @@ IF user chooses Remove
 
     IF user inputs invalid ID, prompt them again
 
+IF user chooses View
+
+    VERIFY if there exists at least 1 student
+
+    SORT all students by Ascending ID order
+
+    DISPLAY all students names with their IDs in ascending order
+    
+    ASK user if which student record they would like to view(Ask for ID)
+
+    DISPLAY student name, GPA, and ID they wish to view
+
+    redirect to main menu
     ELSE
 
         DISPLAY confirmation of removal, redirect to main menu

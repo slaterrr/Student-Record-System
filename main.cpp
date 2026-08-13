@@ -12,7 +12,7 @@ using namespace std;
 #include <vector>
 #include <array>
 #include <cctype>
-
+#include <iomanip>
 /*
 Intialization of a class named Student, that contains a constructor with default parameters
     string Name - Student name
@@ -28,25 +28,57 @@ class Student
         ID = 0;
         GPA = 0.0;
     }
+
+    void setName(string newName)
+    {
+        name = newName;
+    }
+    
+    void setID(int newID)
+    {
+        ID = newID;
+    }
+
+    void setGPA(float newGPA)
+    {
+        GPA = newGPA;
+    }
+
+    string getName()
+    {
+        return name;
+    }
+
+    int getID()
+    {
+        return ID;
+    }
+
+    float getGPA()
+    {
+        return GPA;
+    }
+
     private:
     string name;
     int ID;
     float GPA;
 };
 
-void mainMenu(); // created
+using studentList = vector<Student>; // Assigns 'studentList' name as an alias to vector<Student>
 
-
-void addStudent();
-void editStudent();
-void removeStudent();
-void viewStudent();
+void mainMenu(studentList &); // created
+void addStudent(studentList &);
+void editStudent(studentList &);
+void removeStudent(studentList &);
+void viewStudent(studentList &);
+int binarySearch(studentList &);
 
 
 int main() 
 {
-    vector <Student> studentRecord;
-    mainMenu();
+    studentList studentRecord; // Declares a vector of student records
+    mainMenu(studentRecord);
     return 0;
 }
 
@@ -56,7 +88,7 @@ Params: -
 Returns: -
 Desc: Displays main menu of the program, gives user a list of actions they can choose to perform
 */
-void mainMenu()
+void mainMenu(studentList & studentRecord)
 {
     bool validChoice = true;
     
@@ -85,25 +117,29 @@ void mainMenu()
         if(userMenuChoice == "ADD")
         {
             cout << endl << "You chose add!" << endl;
-            addStudent();            
+            cout << string(30,'-') << endl;
+            addStudent(studentRecord);            
         }
 
         else if(userMenuChoice == "EDIT")
         {
             cout << endl << "You chose edit!" << endl;
-            editStudent();            
+            cout << string(30,'-') << endl;
+            editStudent(studentRecord);            
         }
 
         else if(userMenuChoice == "REMOVE")
         {
             cout << endl << "You chose remove!" << endl;
-            removeStudent();            
+            cout << string(30,'-') << endl;
+            removeStudent(studentRecord);            
         }
 
         else if(userMenuChoice == "VIEW")
         {
             cout << endl << "You chose view!" << endl;
-            viewStudent();            
+            cout << string(30,'-') << endl;
+            viewStudent(studentRecord);            
         }
    
         else if(userMenuChoice == "EXIT")
@@ -124,23 +160,98 @@ void mainMenu()
     
 }
 
+/*
+Function: addStudent
+Params: studentRecord - vector, passed by reference
+Returns: nothing
+Desc: initializes a new student, fills their information,
+      and attaches it to the vector that's passed
+*/
+void addStudent(studentList &studentRecord)
+{
+    string tempNameHolder;
+    int tempIDHolder;
+    float tempGPAHolder;
+    Student newStudent; // Declares newStudent class variable
+    cin.get();
+    cout << "Please enter the student's full name: ";
+    getline(cin,tempNameHolder);
+    newStudent.setName(tempNameHolder);
 
-void addStudent()
+    cout << endl << "Please enter the student's ID: ";
+    cin >> tempIDHolder;
+    newStudent.setID(tempIDHolder);
+
+    cout << endl << "Please enter the student's GPA: ";
+    cin >> tempGPAHolder;
+    newStudent.setGPA(tempGPAHolder);
+
+    studentRecord.push_back(newStudent);
+    cout << string(30, '-') << endl;
+    cout << "Student Name: " << newStudent.getName() << endl;
+    cout << "Student ID: " << newStudent.getID() << endl;
+    cout << "Student GPA: "<< newStudent.getGPA() << endl;
+
+    cout << endl << "Student successfully added!" << endl;
+    cout << string(30, '-') << endl;
+}
+
+/*
+Function: editStudent
+Params: studentRecord - vector, passed by reference
+Returns: nothing
+Desc: allows user to edit student's information
+*/
+void editStudent(studentList & studentRecord)
+{
+
+    Student tempStudent; // creates temporary new Student class variable
+    if(studentRecord.size() >= 1)
+    {
+//  Sorting for studentRecord vector in ascending order based on ID
+        for (int i = 0; i < studentRecord.size() ; i++)
+        {
+            for(int j = i+1; j < studentRecord.size(); j++)
+            {
+               if (studentRecord[i].getID() > studentRecord[j].getID() )
+                {
+                    tempStudent = studentRecord[i];
+                    studentRecord[i] = studentRecord[j];
+                    studentRecord[j] = tempStudent;
+                } 
+            }
+            
+        }
+//  Displaying all student records
+        cout << "Listed in ID ascending order:" << endl;
+        cout << left << setw(10) << "ID"
+                        << setw(30) << "Name"
+                        << setw(5) << "GPA" << endl << endl;
+        for(int i = 0; i < studentRecord.size(); i++)
+        {
+            cout << left << setw(10) << studentRecord[i].getID()
+                        << setw(30) << studentRecord[i].getName()
+                        << setw(5) << studentRecord[i].getGPA() << endl;
+        }
+    }
+    else
+    {
+        cout << "No students to edit, redirecting back to main menu." << endl;
+        cout << string(30,'-') << endl;
+    }
+
+    cout << endl << "Which student would you like to edit? Enter ID: ";
+    int userChoice;
+    cin >> userChoice;
+
+}
+void removeStudent(studentList & studentRecord)
 {
 
 }
 
-void editStudent()
+void viewStudent(studentList & studentRecord)
 {
 
 }
 
-void removeStudent()
-{
-
-}
-
-void viewStudent()
-{
-
-}
