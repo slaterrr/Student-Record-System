@@ -72,8 +72,7 @@ void addStudent(studentList &);
 void editStudent(studentList &);
 void removeStudent(studentList &);
 void viewStudent(studentList &);
-int binarySearch(studentList &);
-
+int binarySearch(studentList, int userChoice);
 
 int main() 
 {
@@ -96,6 +95,7 @@ void mainMenu(studentList & studentRecord)
     {
         string userMenuChoice;
         
+        cout << string(60,'-') << endl;
         cout << "Hello and welcome to slaterrr's Student Record System!" << endl;
         cout << string (60, '-') << endl; // Prints 60 characters of '-'
         cout << "What would you like to do today?" << endl << endl;
@@ -233,6 +233,57 @@ void editStudent(studentList & studentRecord)
                         << setw(30) << studentRecord[i].getName()
                         << setw(5) << studentRecord[i].getGPA() << endl;
         }
+
+//  Asks user for ID and performs binary search
+    int requestedStudentPos; // use this one to edit students, contains ID
+    float requestedNewGPA;
+    int requestedNewID;
+    string requestedNewName;
+    cout << endl << "Which student would you like to edit? Enter ID: ";
+    int userChoice;
+    string userTxtChoice;
+    cin >> userChoice;
+    requestedStudentPos = binarySearch(studentRecord, userChoice);
+
+    if(requestedStudentPos >= 0)
+    {
+        cout << "What would you like to edit?" << endl;
+        cout << string(30,'-') << endl;
+        cout << "GPA | ID | Name" << endl;
+        cout << "Enter here: ";
+        cin >> userTxtChoice;
+
+        for(char& c : userTxtChoice) // converts user input to uppercase
+        {
+            c = toupper(c);
+        }    
+        if(userTxtChoice == "GPA")
+        {
+            cout << endl << "Enter new GPA: ";
+            cin >> requestedNewGPA;
+            studentRecord[requestedStudentPos].setGPA(requestedNewGPA);
+            cout << endl << "Confirmed." << endl;
+        }
+        else if(userTxtChoice == "ID")
+        {
+            cout << endl << "Enter new ID: ";
+            cin >> requestedNewID;
+            studentRecord[requestedStudentPos].setID(requestedNewID);
+            cout << endl << "Confirmed." << endl;
+        }
+        else if(userTxtChoice == "NAME")
+        {
+            cout << endl << "Enter new name: ";
+            cin >> requestedNewName;
+            studentRecord[requestedStudentPos].setName(requestedNewName);
+            cout << endl << "Confirmed." << endl;
+        }
+    }
+    else if(requestedStudentPos == -1)
+    {
+        cout << "Invalid ID. redirecting to main menu" << endl;
+    }
+
     }
     else
     {
@@ -240,11 +291,9 @@ void editStudent(studentList & studentRecord)
         cout << string(30,'-') << endl;
     }
 
-    cout << endl << "Which student would you like to edit? Enter ID: ";
-    int userChoice;
-    cin >> userChoice;
 
 }
+
 void removeStudent(studentList & studentRecord)
 {
 
@@ -255,3 +304,31 @@ void viewStudent(studentList & studentRecord)
 
 }
 
+int binarySearch(studentList studentRecord, int userChoice)
+{
+    int lowerBound = 0;
+    int upperBound = studentRecord.size();
+    int target = userChoice;
+    int middle = studentRecord.size() / 2;
+    do
+    {
+        if(target == studentRecord[middle].getID() )
+        {
+            cout << "ID found." << endl;
+            return middle;
+        }
+        else if (target > studentRecord[middle].getID())
+        {
+            lowerBound = middle + 1;
+            middle = (upperBound + lowerBound) / 2;
+        }
+        else
+        {
+            upperBound = middle - 1;
+            middle = (upperBound + lowerBound) / 2;
+        }
+    } 
+    while (lowerBound <= upperBound);
+    return -1;
+
+}
