@@ -2,7 +2,7 @@
     Name: Slater Zevallos
     Project: Student Record System
     Desc: This program allows you to add, view, and remove student records.
-          Uses vectors, arrays, pointers, referencing & dereferencing, and classes/structs.
+          Uses vectors, referencing & dereferencing, and classes.
     Date created: 12 Aug 2026
 */
 using namespace std;
