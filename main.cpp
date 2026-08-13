@@ -296,7 +296,57 @@ void editStudent(studentList & studentRecord)
 
 void removeStudent(studentList & studentRecord)
 {
+    Student tempStudent; // creates temporary new Student class variable
+    int userChoice;
+    int requestedStudentPos;
+    if(studentRecord.size() >= 1)
+    {
+//  Sorting for studentRecord vector in ascending order based on ID
+        for (int i = 0; i < studentRecord.size() ; i++)
+        {
+            for(int j = i+1; j < studentRecord.size(); j++)
+            {
+               if (studentRecord[i].getID() > studentRecord[j].getID() )
+                {
+                    tempStudent = studentRecord[i];
+                    studentRecord[i] = studentRecord[j];
+                    studentRecord[j] = tempStudent;
+                } 
+            }
+        }
+//  Displaying all student records
+        cout << "Listed in ID ascending order:" << endl;
+        cout << left << setw(10) << "ID"
+                        << setw(30) << "Name"
+                        << setw(5) << "GPA" << endl << endl;
+        for(int i = 0; i < studentRecord.size(); i++)
+        {
+            cout << left << setw(10) << studentRecord[i].getID()
+                        << setw(30) << studentRecord[i].getName()
+                        << setw(5) << studentRecord[i].getGPA() << endl;
+        }   
+        
+        cout << "Which student would you like to remove?" << endl
+        << "Please enter ID: ";
+        cin >> userChoice;
+        requestedStudentPos = binarySearch(studentRecord, userChoice);
 
+        if(requestedStudentPos >= 0)
+    {
+        studentRecord.erase(studentRecord.begin() + requestedStudentPos);
+        cout << "Student successfully removed." << endl;
+    }
+    else if(requestedStudentPos == -1)
+    {
+        cout << "Invalid ID. redirecting to main menu" << endl;
+    }
+
+    }
+    else
+    {
+        cout << "No students to remove, redirecting back to main menu." << endl;
+        cout << string(30,'-') << endl;
+    }
 }
 
 void viewStudent(studentList & studentRecord)
