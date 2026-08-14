@@ -13,6 +13,7 @@ using namespace std;
 #include <array>
 #include <cctype>
 #include <iomanip>
+#include <fstream>
 /*
 Intialization of a class named Student, that contains a constructor with default parameters
     string Name - Student name
@@ -74,6 +75,8 @@ void removeStudent(studentList &);
 void viewStudent(studentList &);
 int binarySearch(studentList, int userChoice);
 void saveStudentRecord(studentList);
+void sort(studentList);
+void display(studentList);
 
 int main() 
 {
@@ -104,6 +107,7 @@ void mainMenu(studentList & studentRecord)
         cout << "Edit - edits an existing student's record(Name, GPA, or ID)." << endl;
         cout << "Remove - removes an existing student from the record system." << endl;
         cout << "View - displays entire student record system." << endl;
+        cout << "Save - saves entire student record onto a file" << endl;
         cout << string (60, '-') << endl; // Prints 60 characters of '-'    
         cout << "Enter here: ";
         cin >> userMenuChoice;
@@ -148,7 +152,6 @@ void mainMenu(studentList & studentRecord)
             cout << endl << "You chose save!" << endl;
             cout << string(30,'-') << endl;
             saveStudentRecord(studentRecord);
-// // / // / // / / // / / // / / / / // / // / /
         }
    
         else if(userMenuChoice == "EXIT")
@@ -219,32 +222,8 @@ void editStudent(studentList & studentRecord)
     Student tempStudent; // creates temporary new Student class variable
     if(studentRecord.size() >= 1)
     {
-//  Sorting for studentRecord vector in ascending order based on ID
-        for (int i = 0; i < studentRecord.size() ; i++)
-        {
-            for(int j = i+1; j < studentRecord.size(); j++)
-            {
-               if (studentRecord[i].getID() > studentRecord[j].getID() )
-                {
-                    tempStudent = studentRecord[i];
-                    studentRecord[i] = studentRecord[j];
-                    studentRecord[j] = tempStudent;
-                } 
-            }
-            
-        }
-//  Displaying all student records
-        cout << "Listed in ID ascending order:" << endl;
-        cout << left << setw(10) << "ID"
-                        << setw(30) << "Name"
-                        << setw(5) << "GPA" << endl << endl;
-        for(int i = 0; i < studentRecord.size(); i++)
-        {
-            cout << left << setw(10) << studentRecord[i].getID()
-                        << setw(30) << studentRecord[i].getName()
-                        << setw(5) << studentRecord[i].getGPA() << endl;
-        }
-
+        sort(studentRecord);
+        display(studentRecord);
 //  Asks user for ID and performs binary search
     int requestedStudentPos; // use this one to edit students, contains ID
     float requestedNewGPA;
@@ -301,10 +280,14 @@ void editStudent(studentList & studentRecord)
         cout << "No students to edit, redirecting back to main menu." << endl;
         cout << string(30,'-') << endl;
     }
-
-
 }
 
+/*
+Function: removeStudent
+Params: studentList & studentRecord - vector, passed by reference
+Returns: nothing
+Desc: Allows user to remove a student from the studentRecord vector
+*/
 void removeStudent(studentList & studentRecord)
 {
     Student tempStudent; // creates temporary new Student class variable
@@ -312,45 +295,21 @@ void removeStudent(studentList & studentRecord)
     int requestedStudentPos;
     if(studentRecord.size() >= 1)
     {
-//  Sorting for studentRecord vector in ascending order based on ID
-        for (int i = 0; i < studentRecord.size() ; i++)
-        {
-            for(int j = i+1; j < studentRecord.size(); j++)
-            {
-               if (studentRecord[i].getID() > studentRecord[j].getID() )
-                {
-                    tempStudent = studentRecord[i];
-                    studentRecord[i] = studentRecord[j];
-                    studentRecord[j] = tempStudent;
-                } 
-            }
-        }
-//  Displaying all student records
-        cout << "Listed in ID ascending order:" << endl;
-        cout << left << setw(10) << "ID"
-                        << setw(30) << "Name"
-                        << setw(5) << "GPA" << endl << endl;
-        for(int i = 0; i < studentRecord.size(); i++)
-        {
-            cout << left << setw(10) << studentRecord[i].getID()
-                        << setw(30) << studentRecord[i].getName()
-                        << setw(5) << studentRecord[i].getGPA() << endl;
-        }   
-        
+        sort(studentRecord);    
+        display(studentRecord);
         cout << "Which student would you like to remove?" << endl
         << "Please enter ID: ";
         cin >> userChoice;
         requestedStudentPos = binarySearch(studentRecord, userChoice);
-
         if(requestedStudentPos >= 0)
-    {
-        studentRecord.erase(studentRecord.begin() + requestedStudentPos);
-        cout << "Student successfully removed." << endl;
-    }
-    else if(requestedStudentPos == -1)
-    {
-        cout << "Invalid ID. redirecting to main menu" << endl;
-    }
+        {
+            studentRecord.erase(studentRecord.begin() + requestedStudentPos);
+            cout << "Student successfully removed." << endl;
+        }
+        else if(requestedStudentPos == -1)
+        {
+            cout << "Invalid ID. redirecting to main menu" << endl;
+        }
 
     }
     else
@@ -360,6 +319,12 @@ void removeStudent(studentList & studentRecord)
     }
 }
 
+/*
+Function: viewStudent
+Params: studentList & studentRecord - vector, passed by reference
+Returns: nothing
+Desc: Allows user to view all students from the studentRecord vector
+*/
 void viewStudent(studentList & studentRecord)
 {
     if(studentRecord.size() >= 1)
@@ -371,26 +336,8 @@ void viewStudent(studentList & studentRecord)
         << setw(5) << "GPA" << endl
         << string(60,'-') << endl;
         Student tempStudent;
-    //  Sorting for studentRecord vector in ascending order based on ID
-        for(int i = 0;i < studentRecord.size(); i++)
-        {
-            for(int j = i+1; j < studentRecord.size(); j++)
-            {
-                if(studentRecord[i].getID() < studentRecord[j].getID() )
-                {
-                    tempStudent = studentRecord[i];
-                    studentRecord[i] = studentRecord[j];
-                    studentRecord[j] = tempStudent;
-                }
-            }
-        }
-
-        for (int i = 0; i < studentRecord.size(); i++)
-        {
-            cout << left << setw(10) << studentRecord[i].getID()
-            << setw(30) << studentRecord[i].getName()
-            << setw(5) << studentRecord[i].getGPA() << endl;
-        }
+        sort(studentRecord);
+        display(studentRecord);
     }
     else
     {
@@ -400,6 +347,14 @@ void viewStudent(studentList & studentRecord)
 
 }
 
+/*
+Function: binarySearch
+Params: studentList & studentRecord - vector, passed by reference
+        int userChoice - user's decision saved onto variable
+Returns: int - location of student in vector
+Desc: Searches for desired student ID, returns the position of the vector corresponding
+        with the ID, else returns -1
+*/
 int binarySearch(studentList studentRecord, int userChoice)
 {
     int lowerBound = 0;
@@ -427,4 +382,86 @@ int binarySearch(studentList studentRecord, int userChoice)
     while (lowerBound <= upperBound);
     return -1;
 
+}
+
+/*
+Function: saveStudentRecord
+Params: studentList & studentRecord - vector, passed by reference
+Returns: nothing
+Desc: Allows user to save entire student record from the studentRecord vector
+        onto a .txt file
+*/
+void saveStudentRecord(studentList studentRecord)
+{
+    ofstream fout;
+    fout.open("StudentRecord.txt");
+    if(!fout)
+    {
+        cout << "Error opening" << "StudentRecord" << ".txt" << endl;
+    }
+    else
+    {
+        if(studentRecord.size() >= 1)
+        {
+            sort(studentRecord);
+            fout << left << setw(10) << "ID"
+            << setw(30) << "Name"
+            << setw(5) << "GPA" << endl;
+            for (int i = 0; i < studentRecord.size(); i++)
+        {
+            fout << left << setw(10) << studentRecord[i].getID()
+            << setw(30) << studentRecord[i].getName()
+            << setw(5) << studentRecord[i].getGPA() << endl
+            << string(60,'-') << endl;
+        }
+            cout << "Student Record successfully saved" << endl;
+        }
+        else
+        {
+            cout << "No students to save, redirecting back to main menu." << endl;
+            cout << string(30,'-') << endl;
+        }  
+    }
+    fout.close();
+}
+
+/*
+Function: sort
+Params: studentList & studentRecord - vector, passed by reference
+Returns: nothing
+Desc: Sorts vector by descending ID order
+*/
+void sort(studentList studentRecord)
+{
+    Student tempStudent;
+    //  Sorting for studentRecord vector in ascending order based on ID
+        for(int i = 0;i < studentRecord.size(); i++)
+        {
+            for(int j = i+1; j < studentRecord.size(); j++)
+            {
+                if(studentRecord[i].getID() < studentRecord[j].getID() )
+                {
+                    tempStudent = studentRecord[i];
+                    studentRecord[i] = studentRecord[j];
+                    studentRecord[j] = tempStudent;
+                }
+            }
+        }
+}
+
+/*
+Function: display
+Params: studentList & studentRecord - vector, passed by reference
+Returns: nothing
+Desc: Displays entire student record to user on screen
+*/
+void display(studentList studentRecord)
+{
+    for (int i = 0; i < studentRecord.size(); i++)
+        {
+            cout << left << setw(10) << studentRecord[i].getID()
+            << setw(30) << studentRecord[i].getName()
+            << setw(5) << studentRecord[i].getGPA() << endl
+            << string(60,'-') << endl;
+        }
 }
