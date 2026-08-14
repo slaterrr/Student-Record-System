@@ -73,6 +73,7 @@ void editStudent(studentList &);
 void removeStudent(studentList &);
 void viewStudent(studentList &);
 int binarySearch(studentList, int userChoice);
+void saveStudentRecord(studentList);
 
 int main() 
 {
@@ -95,7 +96,7 @@ void mainMenu(studentList & studentRecord)
     {
         string userMenuChoice;
         
-        cout << string(60,'-') << endl;
+        cout << string(60,'-') << endl << string(60,'-') << endl << string(60,'-') << endl;
         cout << "Hello and welcome to slaterrr's Student Record System!" << endl;
         cout << string (60, '-') << endl; // Prints 60 characters of '-'
         cout << "What would you like to do today?" << endl << endl;
@@ -141,6 +142,14 @@ void mainMenu(studentList & studentRecord)
             cout << string(30,'-') << endl;
             viewStudent(studentRecord);            
         }
+
+        else if(userMenuChoice == "SAVE")
+        {
+            cout << endl << "You chose save!" << endl;
+            cout << string(30,'-') << endl;
+            saveStudentRecord(studentRecord);
+// // / // / // / / // / / // / / / / // / // / /
+        }
    
         else if(userMenuChoice == "EXIT")
         {
@@ -154,6 +163,8 @@ void mainMenu(studentList & studentRecord)
             cout << string (60, '+') << endl; // Prints 60 characters of '-'
             cout << string (60, '*') << endl << endl; // Prints 60 characters of '-'
         }
+        
+
             
     }
     while(validChoice == true);
@@ -351,6 +362,41 @@ void removeStudent(studentList & studentRecord)
 
 void viewStudent(studentList & studentRecord)
 {
+    if(studentRecord.size() >= 1)
+    {
+        cout << "All student records listed in ID descending order below"
+        << endl << string(60,'-') << endl
+        << left << setw(10) << "ID"
+        << setw(30) << "Name"
+        << setw(5) << "GPA" << endl
+        << string(60,'-') << endl;
+        Student tempStudent;
+    //  Sorting for studentRecord vector in ascending order based on ID
+        for(int i = 0;i < studentRecord.size(); i++)
+        {
+            for(int j = i+1; j < studentRecord.size(); j++)
+            {
+                if(studentRecord[i].getID() < studentRecord[j].getID() )
+                {
+                    tempStudent = studentRecord[i];
+                    studentRecord[i] = studentRecord[j];
+                    studentRecord[j] = tempStudent;
+                }
+            }
+        }
+
+        for (int i = 0; i < studentRecord.size(); i++)
+        {
+            cout << left << setw(10) << studentRecord[i].getID()
+            << setw(30) << studentRecord[i].getName()
+            << setw(5) << studentRecord[i].getGPA() << endl;
+        }
+    }
+    else
+    {
+        cout << "No students to edit, redirecting back to main menu." << endl;
+        cout << string(30,'-') << endl;
+    }
 
 }
 

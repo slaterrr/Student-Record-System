@@ -42,7 +42,7 @@ IF user chooses View
 
     VERIFY if there exists at least 1 student
 
-    SORT all students by Ascending ID order
+    SORT all students by descending ID order
 
     DISPLAY all students names with their IDs in ascending order
     
