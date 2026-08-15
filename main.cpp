@@ -281,7 +281,9 @@ void editStudent(studentList & studentRecord)
         else if(userTxtChoice == "NAME")
         {
             cout << endl << "Enter new name: ";
-            cin >> requestedNewName;
+            cin.get();
+            getline(cin,requestedNewName);
+
             studentRecord[requestedStudentPos].setName(requestedNewName);
             cout << endl << "Confirmed." << endl;
         }

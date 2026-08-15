@@ -1,4 +1,4 @@
 ID        NAME                          GPA  
-1110|Slater Zevallos|3.5|
-1010|Luis Zevallos|3.8|
-1000|Mathew Zevallos|3.1|
+11625401|Emily Zapata|3.8|
+374432|Slater Zevallos|3.3|
+6767|Barney Dinosaur|6.7|
