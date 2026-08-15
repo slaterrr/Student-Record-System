@@ -461,8 +461,8 @@ void viewStudent(studentList & studentRecord)
                 targetPos = linearSearchName(studentRecord,userChoice);
                 if(targetPos >= 0)
                 {
-                    cout << left << setw(10) << "Name" << left << setw(30)
-                    << "ID" << setw(5) << "GPA" << endl;
+                    cout << left << setw(10) << "ID" << left << setw(30)
+                    << "NAME" << setw(5) << "GPA" << endl;
                     cout << left << setw(10) << studentRecord[targetPos].getID()
                     << setw(30) << studentRecord[targetPos].getName()
                     << setw(5) << studentRecord[targetPos].getGPA() << endl
