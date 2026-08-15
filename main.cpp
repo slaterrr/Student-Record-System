@@ -68,15 +68,23 @@ class Student
 
 using studentList = vector<Student>; // Assigns 'studentList' name as an alias to vector<Student>
 
-void mainMenu(studentList &); // created
+void sort(studentList &);
+void display(studentList);
+void mainMenu(studentList &);
 void addStudent(studentList &);
 void editStudent(studentList &);
 void removeStudent(studentList &);
 void viewStudent(studentList &);
 int binarySearch(studentList, int userChoice);
 void saveStudentRecord(studentList);
-void sort(studentList);
-void display(studentList);
+void readStudentRecord(studentList &);
+float findAverage(studentList);
+void sortGPA(studentList &);
+void sortID(studentList &);
+void sortName(studentList &);
+int findLowestGPA(studentList &);
+int findHighestGPA(studentList &);
+int linearSearchName(studentList &,string);
 
 int main() 
 {
@@ -107,7 +115,9 @@ void mainMenu(studentList & studentRecord)
         cout << "Edit - edits an existing student's record(Name, GPA, or ID)." << endl;
         cout << "Remove - removes an existing student from the record system." << endl;
         cout << "View - displays entire student record system." << endl;
+        cout << "Load - loads student record from file" << endl;
         cout << "Save - saves entire student record onto a file" << endl;
+        cout << "Exit - exits program" << endl;
         cout << string (60, '-') << endl; // Prints 60 characters of '-'    
         cout << "Enter here: ";
         cin >> userMenuChoice;
@@ -152,6 +162,13 @@ void mainMenu(studentList & studentRecord)
             cout << endl << "You chose save!" << endl;
             cout << string(30,'-') << endl;
             saveStudentRecord(studentRecord);
+        }
+
+        else if(userMenuChoice == "LOAD")
+        {
+            cout << endl << "Loading up student record file"
+            << endl;
+            readStudentRecord(studentRecord);
         }
    
         else if(userMenuChoice == "EXIT")
@@ -327,21 +344,144 @@ Desc: Allows user to view all students from the studentRecord vector
 */
 void viewStudent(studentList & studentRecord)
 {
+    string userChoice;
     if(studentRecord.size() >= 1)
     {
-        cout << "All student records listed in ID descending order below"
-        << endl << string(60,'-') << endl
-        << left << setw(10) << "ID"
-        << setw(30) << "Name"
-        << setw(5) << "GPA" << endl
-        << string(60,'-') << endl;
-        Student tempStudent;
-        sort(studentRecord);
-        display(studentRecord);
+        cout << "What would you like to do? Select from below" << endl << endl;
+
+        cout << "All - view all student records" << endl
+             << "Average - view average GPA in student record" << endl
+             << "Lowest - view lowest GPA in student record" << endl
+             << "Highest - view highest GPA in student record" << endl
+             << "Search - search for student using either name, ID, or GPA" << endl;
+            
+            cin >> userChoice;
+            for(char &c : userChoice)
+            {
+                c = toupper(c);
+            }
+
+            if(userChoice == "ALL")
+            {
+                cout << "What would you like the order sorted by?" << endl
+                << endl << "GPA" << endl
+                << "Name" << endl
+                << "ID" << endl
+                << "Enter here: ";
+
+                cin >> userChoice;
+                cout << endl;
+                for(char & c : userChoice)
+                {
+                    c = toupper(c);
+                }
+
+                if(userChoice == "GPA")
+                {
+                    // must make 3 functions - sortGPA, sortID, sortName
+                    cout << "All student records listed in GPA descending order below"
+                    << endl << string(60,'-') << endl
+                    << left << setw(10) << "ID"
+                    << setw(30) << "Name"
+                    << setw(5) << "GPA" << endl
+                    << string(60,'-') << endl;
+                    sortGPA(studentRecord);
+                    display(studentRecord);
+ 
+                }
+                
+                else if(userChoice == "NAME")
+                {
+                    cout << "All student records listed in descending alphabetical order below"
+                    << endl << string(60,'-') << endl
+                    << left << setw(10) << "ID"
+                    << setw(30) << "Name"
+                    << setw(5) << "GPA" << endl
+                    << string(60,'-') << endl;
+                    sortName(studentRecord);
+                    display(studentRecord);
+                }
+                else if(userChoice == "ID")
+                {
+                    cout << "All student records listed in ID descending order below"
+                    << endl << string(60,'-') << endl
+                    << left << setw(10) << "ID"
+                    << setw(30) << "Name"
+                    << setw(5) << "GPA" << endl
+                    << string(60,'-') << endl;
+                    sortID(studentRecord);
+                    display(studentRecord);
+                }
+                else
+                {
+                    cout << endl << "Invalid choice. Please try again" << endl;
+                    cout << string (60, '+') << endl; // Prints 60 characters of '-'
+                    cout << string (60, '*') << endl << endl; // Prints 60 characters of '-'
+                }
+            }
+
+            else if(userChoice == "AVERAGE")
+            { 
+                // Display average GPA
+                float averageGPA = findAverage(studentRecord);
+                cout << endl
+                << "Average GPA in student record is "
+                << averageGPA << "!" << endl; 
+            }    
+
+            else if (userChoice == "LOWEST")
+            {
+                // Display lowest GPA
+//                float lowestGPA = findLowestGPA(studentRecord);
+                sortGPA(studentRecord);
+                cout << "The lowest GPA belongs to "
+                << studentRecord[studentRecord.size() - 1].getName()
+                << ", with a GPA of "
+                << studentRecord[studentRecord.size() - 1].getGPA()
+                << endl;
+            }
+            else if(userChoice == "HIGHEST")
+            {
+                // Display highest GPA
+                sortGPA(studentRecord);
+                cout << "The highest GPA belongs to "
+                << studentRecord[0].getName()
+                << ", with a GPA of "
+                << studentRecord[0].getGPA() << "!"
+                << endl;
+            }
+
+            else if(userChoice == "SEARCH")
+            {
+                int targetPos;
+                // Use/create linear search function
+                cin.get();                
+                cout << "Please type full name of student: ";
+                getline(cin, userChoice);
+                targetPos = linearSearchName(studentRecord,userChoice);
+                if(targetPos >= 0)
+                {
+                    cout << left << setw(10) << "Name" << left << setw(30)
+                    << "ID" << setw(5) << "GPA" << endl;
+                    cout << left << setw(10) << studentRecord[targetPos].getID()
+                    << setw(30) << studentRecord[targetPos].getName()
+                    << setw(5) << studentRecord[targetPos].getGPA() << endl
+                    << string(30,'-') << endl;
+                }
+            }
+
+            else
+            {
+           cout << endl << "Invalid choice. Please try again" << endl;
+            cout << string (60, '+') << endl; // Prints 60 characters of '-'
+            cout << string (60, '*') << endl << endl; // Prints 60 characters of '-'
+        }
     }
+
+
     else
     {
-        cout << "No students to edit, redirecting back to main menu." << endl;
+        cout << "No students to view, redirecting back to main menu." << endl;
         cout << string(30,'-') << endl;
     }
 
@@ -358,7 +498,7 @@ Desc: Searches for desired student ID, returns the position of the vector corres
 int binarySearch(studentList studentRecord, int userChoice)
 {
     int lowerBound = 0;
-    int upperBound = studentRecord.size();
+    int upperBound = studentRecord.size() - 1;
     int target = userChoice;
     int middle = studentRecord.size() / 2;
     do
@@ -370,12 +510,12 @@ int binarySearch(studentList studentRecord, int userChoice)
         }
         else if (target > studentRecord[middle].getID())
         {
-            lowerBound = middle + 1;
+            upperBound = middle - 1;
             middle = (upperBound + lowerBound) / 2;
         }
         else
-        {
-            upperBound = middle - 1;
+        {   
+            lowerBound = middle + 1;
             middle = (upperBound + lowerBound) / 2;
         }
     } 
@@ -394,10 +534,10 @@ Desc: Allows user to save entire student record from the studentRecord vector
 void saveStudentRecord(studentList studentRecord)
 {
     ofstream fout;
-    fout.open("StudentRecord.txt");
+    fout.open("studentRecord.txt");
     if(!fout)
     {
-        cout << "Error opening" << "StudentRecord" << ".txt" << endl;
+        cout << "Error opening" << "studentRecord" << ".txt" << endl;
     }
     else
     {
@@ -405,15 +545,15 @@ void saveStudentRecord(studentList studentRecord)
         {
             sort(studentRecord);
             fout << left << setw(10) << "ID"
-            << setw(30) << "Name"
-            << setw(5) << "GPA" << endl;
+                << setw(30) << "NAME"
+                << setw(5) << "GPA" << endl;
             for (int i = 0; i < studentRecord.size(); i++)
-        {
-            fout << left << setw(10) << studentRecord[i].getID()
-            << setw(30) << studentRecord[i].getName()
-            << setw(5) << studentRecord[i].getGPA() << endl
-            << string(60,'-') << endl;
-        }
+            {
+                fout << studentRecord[i].getID() << "|"
+                << studentRecord[i].getName() << "|"
+                << studentRecord[i].getGPA() << "|"
+                << endl;
+            }
             cout << "Student Record successfully saved" << endl;
         }
         else
@@ -431,7 +571,7 @@ Params: studentList & studentRecord - vector, passed by reference
 Returns: nothing
 Desc: Sorts vector by descending ID order
 */
-void sort(studentList studentRecord)
+void sort(studentList & studentRecord)
 {
     Student tempStudent;
     //  Sorting for studentRecord vector in ascending order based on ID
@@ -449,6 +589,61 @@ void sort(studentList studentRecord)
         }
 }
 
+void sortGPA(studentList & studentRecord)
+{
+    Student tempStudent;
+    //  Sorting for studentRecord vector in ascending order based on GPA
+        for(int i = 0;i < studentRecord.size(); i++)
+        {
+            for(int j = i+1; j < studentRecord.size(); j++)
+            {
+                if(studentRecord[i].getGPA() < studentRecord[j].getGPA() )
+                {
+                    tempStudent = studentRecord[i];
+                    studentRecord[i] = studentRecord[j];
+                    studentRecord[j] = tempStudent;
+                }
+            }
+        }
+}
+
+void sortID(studentList & studentRecord)
+{
+    Student tempStudent;
+    //  Sorting for studentRecord vector in ascending order based on ID
+        for(int i = 0;i < studentRecord.size(); i++)
+        {
+            for(int j = i+1; j < studentRecord.size(); j++)
+            {
+                if(studentRecord[i].getID() < studentRecord[j].getID() )
+                {
+                    tempStudent = studentRecord[i];
+                    studentRecord[i] = studentRecord[j];
+                    studentRecord[j] = tempStudent;
+                }
+            }
+        }
+}
+
+void sortName(studentList & studentRecord)
+{
+    Student tempStudent;
+    //  Sorting for studentRecord vector in descending order based on name
+        for(int i = 0;i < studentRecord.size(); i++)
+        {
+            for(int j = i+1; j < studentRecord.size(); j++)
+            {
+                if(studentRecord[i].getName() < studentRecord[j].getName() )
+                {
+                    tempStudent = studentRecord[i];
+                    studentRecord[i] = studentRecord[j];
+                    studentRecord[j] = tempStudent;
+                }
+            }
+        }
+}
+
+
 /*
 Function: display
 Params: studentList & studentRecord - vector, passed by reference
@@ -457,11 +652,96 @@ Desc: Displays entire student record to user on screen
 */
 void display(studentList studentRecord)
 {
+    cout << left << setw(10) << "ID"
+    << setw(30) << "NAME"
+    << setw(5) << "GPA" << endl;
     for (int i = 0; i < studentRecord.size(); i++)
         {
             cout << left << setw(10) << studentRecord[i].getID()
             << setw(30) << studentRecord[i].getName()
-            << setw(5) << studentRecord[i].getGPA() << endl
-            << string(60,'-') << endl;
+            << setw(5) << studentRecord[i].getGPA() << endl;
         }
+}
+
+/*
+Function: readStudentRecord
+Params: studentList & studentRecord - vector, passed by reference
+Returns: nothing
+Desc: Reads and displays entire student record from .txt file onto terminal
+*/
+void readStudentRecord(studentList & studentRecord)
+{
+    ifstream fin;
+    string tempReader;
+
+    cout << string(30,'-') << endl;
+    fin.open("studentRecord.txt");
+    if(!fin)
+    {
+        cout << "Error opening \"studentRecord.txt\" " << endl;
+    }
+    else
+    { 
+        studentRecord.clear();
+        string trash;
+        getline(fin,trash);
+        while( getline(fin,tempReader,'|') )
+        {  
+                Student tempStudent;
+                int id;
+                float gpa;
+                studentRecord.push_back(tempStudent);
+                id = stoi(tempReader);
+                studentRecord[studentRecord.size()-1].setID(id);
+                getline(fin,tempReader,'|');
+                studentRecord[studentRecord.size()-1].setName(tempReader);      
+                getline(fin,tempReader,'|');  
+                gpa = stof(tempReader);
+                studentRecord[studentRecord.size()-1].setGPA(gpa);
+                fin.get();
+        }
+        display(studentRecord);
+    }
+}
+
+float findAverage(studentList studentRecord)
+{
+    float average = 0;
+    for(int i = 0; i < studentRecord.size(); i++)
+    {
+        average += studentRecord[i].getGPA();
+    }
+    average = average / studentRecord.size();
+    return average;
+}
+
+int findLowestGPA(studentList & studentRecord)
+{
+    int lowest = 0; // returns lowest student GPA position in vector
+    sortGPA(studentRecord); 
+    // since sorted descending, will give lowest by default at the end
+    lowest = studentRecord.size();
+    return lowest;
+}
+
+int linearSearchName(studentList & studentRecord,string target)
+{
+    string upperCopy;
+    for(char & c : target)
+    {
+        c = toupper(c);
+    }
+    for(int i = 0; i < studentRecord.size(); i++)
+    {
+        upperCopy = studentRecord[i].getName();
+        for(char & c : upperCopy)
+        {
+            c = toupper(c);
+        }
+        if(target == upperCopy)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
